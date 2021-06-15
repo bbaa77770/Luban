@@ -9,7 +9,6 @@ class VisualizerLayout extends PureComponent {
         renderTop: PropTypes.func,
         renderTopRight: PropTypes.func,
         renderCenterLeft: PropTypes.func,
-        renderCenter: PropTypes.func,
         renderCenterRight: PropTypes.func,
         renderBottomLeft: PropTypes.func,
         renderBottom: PropTypes.func,
