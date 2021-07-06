@@ -264,6 +264,7 @@ class PrintableArea {
                 width: x,
                 height: Math.min(fixtureLength, y),
                 fill: '#FFE7E7',
+                'fill-opacity': 1,
                 stroke: '#000',
                 'stroke-width': 1 / this.scale,
                 opacity: 1,

@@ -9,7 +9,7 @@ import Anchor from '../../components/Anchor';
 import styles from './styles.styl';
 
 
-function ConfigValueBox({ optionConfigGroup, calculateTextIndex, isCategorySelected, type = 'input', isDefinitionEditable = () => true, onChangeDefinition, definitionForManager, customConfigs }) {
+function ConfigValueBox({ optionConfigGroup, calculateTextIndex, isCategorySelected, type = 'input', isDefinitionEditable = () => true, onChangeDefinition, onResetDefinition, definitionForManager, customConfigs }) {
     const [activeCateId, setActiveCateId] = useState(2);
     const scrollDom = useRef(null);
     function setActiveCate(cateId) {
@@ -86,6 +86,8 @@ function ConfigValueBox({ optionConfigGroup, calculateTextIndex, isCategorySelec
                                                 key={key}
                                                 isDefinitionEditable={isEditable}
                                                 onChangeDefinition={onChangeDefinition}
+                                                onResetDefinition={onResetDefinition}
+                                                isProfile="true"
                                             />
                                         );
                                     } else if (type === 'checkbox') {
@@ -120,7 +122,8 @@ ConfigValueBox.propTypes = {
     type: PropTypes.string,
     calculateTextIndex: PropTypes.func,
     isDefinitionEditable: PropTypes.func,
-    onChangeDefinition: PropTypes.func.isRequired
+    onChangeDefinition: PropTypes.func.isRequired,
+    onResetDefinition: PropTypes.func.isRequired
 };
 
 export default React.memo(ConfigValueBox);

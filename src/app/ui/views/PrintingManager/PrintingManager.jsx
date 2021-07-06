@@ -117,6 +117,12 @@ function PrintingManager() {
         },
         removeManagerDefinition: async (definition) => {
             await dispatch(printingActions.removeDefinitionByType(managerDisplayType, definition));
+        },
+        getDefaultDefinition: (definitionId, key) => {
+            return dispatch(printingActions.getDefaultDefinition(definitionId, key));
+        },
+        resetDefinitionById: (id) => {
+            dispatch(printingActions.resetDefinitionById(id));
         }
     };
 

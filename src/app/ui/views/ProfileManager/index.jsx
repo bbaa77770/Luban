@@ -379,6 +379,18 @@ function ProfileManager({ optionConfigGroup, disableCategory = true, managerTitl
             ref.current.value = null;
             ref.current.click();
         },
+        onResetDefinition: (key) => {
+            const { definitionForManager } = definitionState;
+            const newDefinitionForManager = cloneDeep(definitionForManager);
+
+            const value = outsideActions.getDefaultDefinition(definitionForManager.definitionId, key);
+            newDefinitionForManager.settings[key].default_value = value;
+            setDefinitionState({
+                definitionForManager: newDefinitionForManager
+            });
+
+            outsideActions.onSaveDefinitionForManager(newDefinitionForManager);
+        },
         onChangeDefinition: (key, value) => {
             // now setDefinitionState is synchronize, so remove setTimeout
             const { definitionForManager } = definitionState;
@@ -388,20 +400,6 @@ function ProfileManager({ optionConfigGroup, disableCategory = true, managerTitl
                 definitionForManager: newDefinitionForManager
             });
 
-            // if (checkboxKeyArray) {
-            //     let newDefinitionOptions;
-            //     checkboxKeyArray.forEach((checkboxKey) => {
-            //         newDefinitionOptions = definitionOptions.map((item) => {
-            //             if (item.label === definitionForManager.name && key === checkboxKey) {
-            //                 item[checkboxKey] = value;
-            //             }
-            //             return item;
-            //         });
-            //     });
-            //     setDefinitionState({
-            //         definitionOptions: newDefinitionOptions
-            //     });
-            // }
             outsideActions.onSaveDefinitionForManager(newDefinitionForManager);
         }
     };
@@ -438,6 +436,8 @@ function ProfileManager({ optionConfigGroup, disableCategory = true, managerTitl
                                 <ul className={classNames(styles['manager-name-wrapper'])}>
                                     {(cates.map((cate) => {
                                         const displayCategory = limitStringLength(cate.category, 28);
+                                        const { category } = cate;
+                                        const isDefault = category === 'Default';
                                         const isCategorySelected = cate.category === definitionState?.definitionForManager.category;
                                         return !!cate.items.length && (
                                             <li key={`${cate.category}`}>
@@ -493,6 +493,17 @@ function ProfileManager({ optionConfigGroup, disableCategory = true, managerTitl
                                                                             onClick={() => actions.onSelectDefinitionById(currentOption.value, currentOption.label)}
                                                                             onDoubleClick={() => actions.setRenamingStatus(true)}
                                                                         >
+                                                                            {isDefault && isSelected && (
+                                                                                <span style={{ right: '0px', float: 'left' }}>
+                                                                                    <SvgIcon
+                                                                                        name="Reset"
+                                                                                        size={18}
+                                                                                        onClick={() => {
+                                                                                            outsideActions.resetDefinitionById(currentOption.value);
+                                                                                        }}
+                                                                                    />
+                                                                                </span>
+                                                                            )}
                                                                             {(isSelected && definitionState.renamingStatus) ? (
                                                                                 <input
                                                                                     ref={refs.renameInput}
@@ -595,6 +606,7 @@ function ProfileManager({ optionConfigGroup, disableCategory = true, managerTitl
                                 optionConfigGroup={optionConfigGroup}
                                 isDefinitionEditable={isDefinitionEditable}
                                 onChangeDefinition={actions.onChangeDefinition}
+                                onResetDefinition={actions.onResetDefinition}
                             />
 
                         </div>
