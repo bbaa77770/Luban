@@ -282,6 +282,7 @@ printingConfigs.uploadDefinition = defaultAPIFactory((definitionId, tmpPath, ser
 //
 const cncConfigs = {};
 cncConfigs.getAllDefinitions = defaultAPIFactory(() => request.get('/api/cncToolDefinitions'));
+cncConfigs.getDefaultDefinitions = defaultAPIFactory(() => request.get('/api/cncDefaultDefinitions'));
 cncConfigs.getToolListDefinition = defaultAPIFactory((definitionId, name) => request.get(`/api/cncToolListDefinition/${definitionId}`).query({ name }));
 // cncConfigs.createToolCategoryDefinition = defaultAPIFactory((activeToolCategory) => request.post('/api/cncToolCategoryDefinition').send({ activeToolCategory }));
 cncConfigs.createToolListDefinition = defaultAPIFactory((activeToolList) => request.post('/api/cncToolListDefinition/').send({ activeToolList }));

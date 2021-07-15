@@ -163,6 +163,7 @@ function registerApis(app) {
     app.post(urljoin(settings.route, 'api/printingDefinition/upload'), api.printingConfigs.uploadDefinition);
 
     app.get(urljoin(settings.route, 'api/cncToolDefinitions'), api.cncConfigs.getToolDefinitions);
+    app.get(urljoin(settings.route, 'api/cncDefaultDefinitions'), api.cncConfigs.getDefaultDefinitions);
 
     app.get(urljoin(settings.route, 'api/cncToolListDefinition/:definitionId'), api.cncConfigs.getToolListDefinition);
     app.post(urljoin(settings.route, 'api/cncToolListDefinition'), api.cncConfigs.createToolListDefinition);

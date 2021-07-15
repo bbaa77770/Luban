@@ -56,7 +56,7 @@ function useGetDefinitions(allDefinitions, definitionState, setDefinitionState, 
         } else if (!definitionForManager && !defaultKeysAndId?.name) {
             definitionForManager = allDefinitions.find(d => d.definitionId === defaultKeysAndId?.id);
         }
-        const selectedSettingDefaultValue = getDefaultDefinition(definitionForManager?.definitionId);
+        const selectedSettingDefaultValue = getDefaultDefinition && getDefaultDefinition(definitionForManager?.definitionId);
 
         Object.assign(newState, {
             definitionForManager: definitionForManager,
