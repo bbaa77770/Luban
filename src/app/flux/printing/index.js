@@ -396,15 +396,14 @@ export const actions = {
         };
     },
 
-    getDefaultDefinition: (id, key) => (dispatch, getState) => {
+    getDefaultDefinition: (id) => (dispatch, getState) => {
         const { defaultDefinitions } = getState().printing;
         const def = defaultDefinitions.find(d => d.definitionId === id);
-        return def.settings[key].default_value;
+        return def?.settings;
     },
 
     resetDefinitionById: (definitionId) => (dispatch, getState) => {
         const { defaultDefinitions } = getState().printing;
-        console.log('default', defaultDefinitions);
         const newDef = cloneDeep(defaultDefinitions.find(d => d.definitionId === definitionId));
         definitionManager.updateDefinition(newDef);
         // const definition =

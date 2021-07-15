@@ -42,12 +42,19 @@ class Configurations extends PureComponent {
     };
 
     state = {
+        selectedSettingDefaultValue: null,
         customConfigs: cloneDeep(PRINTING_QUALITY_CUSTOMIZE_FIELDS),
         showCustomConfigPannel: false,
         selectedDefinition: null
     };
 
     actions = {
+        onChangeSelectedDefinition: (selectedDefinition) => {
+            selectedDefinition && this.setState({
+                selectedSettingDefaultValue: this.props.getDefaultDefinition(selectedDefinition.definitionId),
+                selectedDefinition: selectedDefinition
+            });
+        },
         toggleShowCustomConfigPannel: () => {
             const { showCustomConfigPannel } = this.state;
             this.setState({
@@ -86,14 +93,13 @@ class Configurations extends PureComponent {
 
             await this.props.updateDefinitionSettings(selectedDefinition, newDefinitionSettings);
             await this.props.updateDefinitionsForManager(selectedDefinition.definitionId, 'quality');
-            this.setState({
-                selectedDefinition: newDefinitionForManager
-            });
+
+            this.actions.onChangeSelectedDefinition(newDefinitionForManager);
             this.actions.displayModel();
         },
         onResetDefinition: async (definitionKey) => {
             const { selectedDefinition } = this.state;
-            const value = this.props.getDefaultDefinition(selectedDefinition.definitionId, definitionKey);
+            const value = this.props.getDefaultDefinition(selectedDefinition.definitionId)[definitionKey].default_value;
             const newDefinitionForManager = cloneDeep(selectedDefinition);
             newDefinitionForManager.settings[definitionKey].default_value = value;
 
@@ -102,9 +108,7 @@ class Configurations extends PureComponent {
 
             await this.props.updateDefinitionSettings(selectedDefinition, newDefinitionSettings);
             await this.props.updateDefinitionsForManager(selectedDefinition.definitionId, 'quality');
-            this.setState({
-                selectedDefinition: newDefinitionForManager
-            });
+            this.actions.onChangeSelectedDefinition(newDefinitionForManager);
             this.actions.displayModel();
         },
         onShowMaterialManager: () => {
@@ -117,9 +121,7 @@ class Configurations extends PureComponent {
          * @param definition
          */
         onSelectOfficialDefinition: (definition) => {
-            this.setState({
-                selectedDefinition: definition
-            });
+            this.actions.onChangeSelectedDefinition(definition);
             this.props.updateDefaultQualityId(definition.definitionId);
             this.props.updateActiveDefinition(definition);
         },
@@ -131,9 +133,7 @@ class Configurations extends PureComponent {
             this.actions.displayModel();
         },
         onSelectCustomDefinition: (definition) => {
-            this.setState({
-                selectedDefinition: definition
-            });
+            this.actions.onChangeSelectedDefinition(definition);
             // this.props.updateDefaultQualityId(definition.definitionId);
             this.props.updateActiveDefinition(definition);
         }
@@ -146,6 +146,7 @@ class Configurations extends PureComponent {
 
     componentDidMount() {
         const { defaultQualityId, qualityDefinitions } = this.props;
+
         if (qualityDefinitions.length) {
             // re-select definition based on new properties
             let definition = null;
@@ -188,6 +189,7 @@ class Configurations extends PureComponent {
         const state = this.state;
         const actions = this.actions;
         const qualityDefinition = this.state.selectedDefinition;
+        const selectedSettingDefaultValue = this.state.selectedSettingDefaultValue;
         const isProfile = defaultQualityId
             && includes(['material.pla', 'material.abs', 'quality.fast_print', 'quality.normal_quality', 'quality.high_quality'], defaultQualityId);
 
@@ -238,7 +240,9 @@ class Configurations extends PureComponent {
                                 isDefinitionEditable={() => {
                                     return !isProfile;
                                 }}
-                                onResetDefinition={actions.onResetDefinition}
+                                defaultValue={{
+                                    value: selectedSettingDefaultValue && selectedSettingDefaultValue[key].default_value
+                                }}
                             />
                         );
                     })}
@@ -317,7 +321,7 @@ const mapDispatchToProps = (dispatch) => {
         updateDefinitionsForManager: (definition, type) => dispatch(printingActions.updateDefinitionsForManager(definition, type)),
         updateDefinitionSettings: (definition, settings) => dispatch(printingActions.updateDefinitionSettings(definition, settings)),
         updateManagerDisplayType: (managerDisplayType) => dispatch(printingActions.updateManagerDisplayType(managerDisplayType)),
-        getDefaultDefinition: (id, key) => dispatch(printingActions.getDefaultDefinition(id, key)),
+        getDefaultDefinition: (id) => dispatch(printingActions.getDefaultDefinition(id)),
 
         destroyGcodeLine: () => dispatch(printingActions.destroyGcodeLine()),
         displayModel: () => dispatch(printingActions.displayModel()),
